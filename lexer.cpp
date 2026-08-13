@@ -18,11 +18,51 @@ struct LexingInfo {
 };
 
 static std::vector<LexingInfo> lexTokenInfo{
-    //note: surround words with \\b to force matches on word boundries
+    //note: surround words with \\b to force matches on word boundaries
+
+    // data type key words
     {"\\bint\\b",INT_DATATYPE_T,false},
     {"\\bfixed\\b",FIXED_DATATYPE_T,false},
     {"\\bptr\\b",POINTER_DATATYPE_T,false},
     {"\\bvoid\\b",VOID_DATATYPE_T,false},
+    // structure key words
+    {"\\bfunction\\b",FUNCTION_KEYWORD_T,false},
+    {"\\binline\\b",INLINE_KEYWORD_T,false},
+    {"\\bif\\b",IF_KEYWORD_T,false},
+    {"\\belse\\b",ELSE_KEYWORD_T,false},
+    {"\\breturn\\b",RETURN_KEYWORD_T,false},
+    {"\\bwhile\\b",WHILE_KEYWORD_T,false},
+    {"\\bfor\\b",FOR_KEYWORD_T,false},
+    {"\\bcontinue\\b",CONTINUE_KEYWORD_T,false},
+    {"\\bbreak\\b",BREAK_KEYWORD_T,false},
+    // operators
+    {"<<",LEFT_SHIFT_OPERATOR_T,false},
+    {">>",RIGHT_SHIFT_OPERATOR_T,false},
+    {"<\\-",POINTER_VALUE_OPERATOR_T,false},
+    {"\\&\\&",LOGICAL_AND_OPERATOR_T,false},
+    {"\\|\\|",LOGICAL_OR_OPERATOR_T,false},
+    {"\\+=",ADD_TO_OPERATOR_T,false},
+    {"\\-=",SUBTRACT_FROM_OPERATOR_T,false},
+    {"\\*=",MULTIPLY_WITH_OPERATOR_T,false},
+    {"/=",DIVIDE_BY_OPERATOR_T,false},
+    {"%=",MODULO_BY_OPERATOR_T,false},
+    {"\\+",ADD_OPERATOR_T,false},
+    {"\\-", SUBTRACT_OPERATOR_T,false},
+    {"\\*",MULTIPLY_OPERATOR_T,false},
+    {"/",DIVIDE_OPERATOR_T,false},
+    {"%",MODULO_OPERATOR_T,false},
+    {"~",NEGATE_OPERATOR_T,false},
+    {"\\&",BITWISE_AND_OPERATOR_T,false},
+    {"\\|",BITWISE_OR_OPERATOR_T,false},
+    {"\\^",BITWISE_XOR_OPERATOR_T,false},
+    {">=",GREATER_THAN_OR_EQUAL_OPERATOR_T,false},
+    {"<=",LESS_THAN_OR_EQUAL_OPERATOR_T,false},
+    {"==",EQUAL_OPERATOR_T,false},
+    {"!=",NOT_EQUAL_OPERATOR_T,false},
+    {">",GREATER_THAN_OPERATOR_T,false},
+    {"<",LESS_THAN_OPERATOR_T,false},
+    {"!",LOGICAL_NOT_OPERATOR_T,false},
+    {"=",ASSIGNMENT_OPERATOR_T,false},
 
 };
 

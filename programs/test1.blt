@@ -1,5 +1,9 @@
 @import test2
 
 //this is a comment
-fixed fixed
+fixed fixed//this is a comment!!!
    fixed int ptr int int void int
+
+    function inline function if
+if if else if continue while return for break
+<< >> <- && || += -= *= /= %= + - / * % ~ & | ^ >= <= == != > < ~ =
