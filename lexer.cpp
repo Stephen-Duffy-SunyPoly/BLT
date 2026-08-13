@@ -18,11 +18,11 @@ struct LexingInfo {
 };
 
 static std::vector<LexingInfo> lexTokenInfo{
-    //note: follow a word with ([^a-zA-Z0-9\\_-]|$) to prevent mating the middle of an identifier that contains these words
-    {"int([^a-zA-Z0-9\\_-]|$)",INT_DATATYPE_T,false},
-    {"fixed([^a-zA-Z0-9\\_-]|$)",FIXED_DATATYPE_T,false},
-    {"ptr([^a-zA-Z0-9\\_-]|$)",POINTER_DATATYPE_T,false},
-    {"void([^a-zA-Z0-9\\_-]|$)",VOID_DATATYPE_T,false},
+    //note: surround words with \\b to force matches on word boundries
+    {"\\bint\\b",INT_DATATYPE_T,false},
+    {"\\bfixed\\b",FIXED_DATATYPE_T,false},
+    {"\\bptr\\b",POINTER_DATATYPE_T,false},
+    {"\\bvoid\\b",VOID_DATATYPE_T,false},
 
 };
 
