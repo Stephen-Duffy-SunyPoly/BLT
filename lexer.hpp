@@ -47,7 +47,18 @@ enum TokenType {
     LESS_THAN_OPERATOR_T,
     LOGICAL_NOT_OPERATOR_T,
     ASSIGNMENT_OPERATOR_T,
-
+    // structure
+    OPEN_BRACE_T,
+    CLOSE_BRACE_T,
+    OPEN_PAREN_T,
+    CLOSE_PAREN_T,
+    OPEN_SQUARE_BRACKET_T,
+    CLOSE_SQUARE_BRACKET_T,
+    COMMA_T,
+    SEMICOLON_T,
+    // variable data
+    NUMBER_T,
+    IDENTIFIER_T,
 };
 
 struct LexedToken {

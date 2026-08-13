@@ -63,6 +63,20 @@ static std::vector<LexingInfo> lexTokenInfo{
     {"<",LESS_THAN_OPERATOR_T,false},
     {"!",LOGICAL_NOT_OPERATOR_T,false},
     {"=",ASSIGNMENT_OPERATOR_T,false},
+    // structure
+    {"\\{",OPEN_BRACE_T,false},
+    {"\\}",CLOSE_BRACE_T,false},
+    {"\\(",OPEN_PAREN_T,false},
+    {"\\)",CLOSE_PAREN_T,false},
+    {"\\[",OPEN_SQUARE_BRACKET_T,false},
+    {"\\]",CLOSE_SQUARE_BRACKET_T,false},
+    {",",COMMA_T,false},
+    {";",SEMICOLON_T,false},
+    // variable data
+    {"(0x[0-9a-fA-F]+)",NUMBER_T,true},//hex numbers
+    {"(0b[10]+)",NUMBER_T,true},
+    {"([0-9]+)",NUMBER_T,true},//decimal numbers
+    {"([a-zA-Z][a-zA-Z0-9_]*)",IDENTIFIER_T,true}
 
 };
 
