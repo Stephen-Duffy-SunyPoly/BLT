@@ -58,7 +58,9 @@ enum TokenType {
     SEMICOLON_T,
     // variable data
     NUMBER_T,
+    FIXED_POINT_NUMBER_T,
     IDENTIFIER_T,
+    STRING_LITERAL_T
 };
 
 struct LexedToken {

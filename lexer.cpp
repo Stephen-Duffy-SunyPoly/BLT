@@ -73,10 +73,12 @@ static std::vector<LexingInfo> lexTokenInfo{
     {",",COMMA_T,false},
     {";",SEMICOLON_T,false},
     // variable data
+    {"([0-9]+\\.[0-9*])",FIXED_POINT_NUMBER_T,true},
     {"(0x[0-9a-fA-F]+)",NUMBER_T,true},//hex numbers
-    {"(0b[10]+)",NUMBER_T,true},
+    {"(0b[10]+)",NUMBER_T,true}, //binarry numbers
     {"([0-9]+)",NUMBER_T,true},//decimal numbers
-    {"([a-zA-Z][a-zA-Z0-9_]*)",IDENTIFIER_T,true}
+    {"([a-zA-Z][a-zA-Z0-9_]*)",IDENTIFIER_T,true},
+    {"\"((?:\\\\.|[^\"\\\\])*)\"",STRING_LITERAL_T,true}
 
 };
 
