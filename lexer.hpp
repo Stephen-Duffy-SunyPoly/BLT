@@ -75,4 +75,5 @@ const std::string WHITESPACE = " \t\n\r\f\v";
 
 void lexFile(std::string &fileName, std::vector<LexedToken>& lexedTokens);
 std::string trim(std::string untrimmed);
-
+std::ostream& operator<<(std::ostream& os, const TokenType& token);
+std::ostream& operator<<(std::ostream& os, const LexedToken& token);

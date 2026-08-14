@@ -73,12 +73,12 @@ static std::vector<LexingInfo> lexTokenInfo{
     {",",COMMA_T,false},
     {";",SEMICOLON_T,false},
     // variable data
-    {"([0-9]+\\.[0-9*])",FIXED_POINT_NUMBER_T,true},
+    {"([0-9]+\\.[0-9]*)",FIXED_POINT_NUMBER_T,true},
     {"(0x[0-9a-fA-F]+)",NUMBER_T,true},//hex numbers
-    {"(0b[10]+)",NUMBER_T,true}, //binarry numbers
+    {"(0b[10]+)",NUMBER_T,true}, //binary numbers
     {"([0-9]+)",NUMBER_T,true},//decimal numbers
     {"([a-zA-Z][a-zA-Z0-9_]*)",IDENTIFIER_T,true},
-    {"\"((?:\\\\.|[^\"\\\\])*)\"",STRING_LITERAL_T,true}
+    {"\"((?:\\\\.|[^\"\\\\])*)\"",STRING_LITERAL_T,true} //remember to remove the \ before any quotes leter
 
 };
 
@@ -91,7 +91,7 @@ std::string trim(std::string untrimmed) {
     return untrimmed;
 }
 
-void lexLine(std::string &line, std::vector<LexedToken> &lexedTokens, std::string &fileName, size_t lineNumber) {
+static void lexLine(std::string &line, std::vector<LexedToken> &lexedTokens, std::string &fileName, size_t lineNumber) {
     absl::string_view lineView(line);
     while (!lineView.empty()) {
         auto pos = static_cast<size_t>(reinterpret_cast<long long>(lineView.data()) - reinterpret_cast<long long>(line.data()));
@@ -190,4 +190,174 @@ void lexFile(std::string &fileName, std::vector<LexedToken> &lexedTokens) {
 
         lexLine(line, lexedTokens, fileName, lineNumber);
     }
+}
+
+std::ostream & operator<<(std::ostream &os, const TokenType &token) {
+    switch (token) {
+        case INT_DATATYPE_T:
+            os << "INT_DATATYPE_T";
+            break;
+        case FIXED_DATATYPE_T:
+            os << "FIXED_DATATYPE_T";
+            break;
+        case POINTER_DATATYPE_T:
+            os << "POINTER_DATATYPE_T";
+            break;
+        case VOID_DATATYPE_T:
+            os << "VOID_DATATYPE_T";
+            break;
+        case FUNCTION_KEYWORD_T:
+            os << "FUNCTION_KEYWORD_T";
+            break;
+        case INLINE_KEYWORD_T:
+            os << "INLINE_KEYWORD_T";
+            break;
+        case IF_KEYWORD_T:
+            os << "IF_KEYWORD_T";
+            break;
+        case ELSE_KEYWORD_T:
+            os << "ELSE_KEYWORD_T";
+            break;
+        case RETURN_KEYWORD_T:
+            os << "RETURN_KEYWORD_T";
+            break;
+        case WHILE_KEYWORD_T:
+            os << "WHILE_KEYWORD_T";
+            break;
+        case FOR_KEYWORD_T:
+            os << "FOR_KEYWORD_T";
+            break;
+        case CONTINUE_KEYWORD_T:
+            os << "CONTINUE_KEYWORD_T";
+            break;
+        case BREAK_KEYWORD_T:
+            os << "BREAK_KEYWORD_T";
+            break;
+        case LEFT_SHIFT_OPERATOR_T:
+            os << "LEFT_SHIFT_OPERATOR_T";
+            break;
+        case RIGHT_SHIFT_OPERATOR_T:
+            os << "RIGHT_SHIFT_OPERATOR_T";
+            break;
+        case POINTER_VALUE_OPERATOR_T:
+            os << "POINTER_VALUE_OPERATOR_T";
+            break;
+        case LOGICAL_AND_OPERATOR_T:
+            os << "LOGICAL_AND_OPERATOR_T";
+            break;
+        case LOGICAL_OR_OPERATOR_T:
+            os << "LOGICAL_OR_OPERATOR_T";
+            break;
+        case ADD_TO_OPERATOR_T:
+            os << "ADD_TO_OPERATOR_T";
+            break;
+        case SUBTRACT_FROM_OPERATOR_T:
+            os << "SUBTRACT_FROM_OPERATOR_T";
+            break;
+        case MULTIPLY_WITH_OPERATOR_T:
+            os << "MULTIPLY_WITH_OPERATOR_T";
+            break;
+        case DIVIDE_BY_OPERATOR_T:
+            os << "DIVIDE_BY_OPERATOR_T";
+            break;
+        case MODULO_BY_OPERATOR_T:
+            os << "MODULO_BY_OPERATOR_T";
+            break;
+        case ADD_OPERATOR_T:
+            os << "ADD_OPERATOR_T";
+            break;
+        case SUBTRACT_OPERATOR_T:
+            os << "SUBTRACT_OPERATOR_T";
+            break;
+        case MULTIPLY_OPERATOR_T:
+            os << "MULTIPLY_OPERATOR_T";
+            break;
+        case DIVIDE_OPERATOR_T:
+            os << "DIVIDE_OPERATOR_T";
+            break;
+        case MODULO_OPERATOR_T:
+            os << "MODULO_OPERATOR_T";
+            break;
+        case NEGATE_OPERATOR_T:
+            os << "NEGATE_OPERATOR_T";
+            break;
+        case BITWISE_AND_OPERATOR_T:
+            os << "BITWISE_AND_OPERATOR_T";
+            break;
+        case BITWISE_OR_OPERATOR_T:
+            os << "BITWISE_OR_OPERATOR_T";
+            break;
+        case BITWISE_XOR_OPERATOR_T:
+            os << "BITWISE_XOR_OPERATOR_T";
+            break;
+        case GREATER_THAN_OR_EQUAL_OPERATOR_T:
+            os << "GREATER_THAN_OR_EQUAL_OPERATOR_T";
+            break;
+        case LESS_THAN_OR_EQUAL_OPERATOR_T:
+            os << "LESS_THAN_OR_EQUAL_OPERATOR_T";
+            break;
+        case EQUAL_OPERATOR_T:
+            os << "EQUAL_OPERATOR_T";
+            break;
+        case NOT_EQUAL_OPERATOR_T:
+            os << "NOT_EQUAL_OPERATOR_T";
+            break;
+        case GREATER_THAN_OPERATOR_T:
+            os << "GREATER_THAN_OPERATOR_T";
+            break;
+        case LESS_THAN_OPERATOR_T:
+            os << "LESS_THAN_OPERATOR_T";
+            break;
+        case LOGICAL_NOT_OPERATOR_T:
+            os << "LOGICAL_NOT_OPERATOR_T";
+            break;
+        case ASSIGNMENT_OPERATOR_T:
+            os << "ASSIGNMENT_OPERATOR_T";
+            break;
+        case OPEN_BRACE_T:
+            os << "OPEN_BRACE_T";
+            break;
+        case CLOSE_BRACE_T:
+            os << "CLOSE_BRACE_T";
+            break;
+        case OPEN_PAREN_T:
+            os << "OPEN_PAREN_T";
+            break;
+        case CLOSE_PAREN_T:
+            os << "CLOSE_PAREN_T";
+            break;
+        case OPEN_SQUARE_BRACKET_T:
+            os << "OPEN_SQUARE_BRACKET_T";
+            break;
+        case CLOSE_SQUARE_BRACKET_T:
+            os << "CLOSE_SQUARE_BRACKET_T";
+            break;
+        case COMMA_T:
+            os << "COMMA_T";
+            break;
+        case SEMICOLON_T:
+            os << "SEMICOLON_T";
+            break;
+        case NUMBER_T:
+            os << "NUMBER_T";
+            break;
+        case FIXED_POINT_NUMBER_T:
+            os << "FIXED_POINT_NUMBER_T";
+            break;
+        case IDENTIFIER_T:
+            os << "IDENTIFIER_T";
+            break;
+        case STRING_LITERAL_T:
+            os << "STRING_LITERAL_T";
+            break;
+    }
+    return os;
+}
+
+std::ostream & operator<<(std::ostream &os, const LexedToken &token) {
+    os << token.type;
+    if (!token.value.empty()) {
+        os << "(" << token.value << ")";
+    }
+    return os;
 }

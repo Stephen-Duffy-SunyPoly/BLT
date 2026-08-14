@@ -18,5 +18,9 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
     std::cout << "Generated " << lexedTokens.size() << " tokens" << std::endl;
+    for (auto &lexedToken : lexedTokens) {
+        std::cout << lexedToken << " ";
+    }
+    std::cout << std::endl;
     return EXIT_SUCCESS;
 }
