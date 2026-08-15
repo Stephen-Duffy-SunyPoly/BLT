@@ -35,6 +35,7 @@ static std::vector<LexingInfo> lexTokenInfo{
     {"\\bfor\\b",FOR_KEYWORD_T,false},
     {"\\bcontinue\\b",CONTINUE_KEYWORD_T,false},
     {"\\bbreak\\b",BREAK_KEYWORD_T,false},
+    {"\\bimmediate\\b",IMMEDIATE_KEYWORD_T,false},
     // operators
     {"<<",LEFT_SHIFT_OPERATOR_T,false},
     {">>",RIGHT_SHIFT_OPERATOR_T,false},
@@ -232,6 +233,9 @@ std::ostream & operator<<(std::ostream &os, const TokenType &token) {
             break;
         case BREAK_KEYWORD_T:
             os << "BREAK_KEYWORD_T";
+            break;
+        case IMMEDIATE_KEYWORD_T:
+            os << "IMMEDIATE_KEYWORD_T";
             break;
         case LEFT_SHIFT_OPERATOR_T:
             os << "LEFT_SHIFT_OPERATOR_T";

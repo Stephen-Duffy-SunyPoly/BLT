@@ -1,16 +1,36 @@
 @import test2
 
-//this is a comment
-fixed fixed//this is a comment!!!
-   fixed int ptr int int void int
+//global consts to exist in place of functions for these peripherals
+immediate ptr<int> RAND_BITS = 0x8011;
+immediate ptr<int> UPDATE = 0xE000;
+immediate ptr<int> X1 = 0xD000;
+immediate ptr<int> Y1 = 0xD001;
+immediate ptr<int> X2 = 0xD002;
+immediate ptr<int> Y2 = 0xD003;
+immediate ptr<int> FILL = 0xD011;
+immediate ptr<int> RECT = 0xE010;
 
-    function inline function if
-if if else if continue while return for break
-<< >> <- && || += -= *= /= %= + - / * % ~ & | ^ >= <= == != > < ~ =
-( ) { } [ ] , ;,,
-0x12Ac
-0b110011011
-9158634098
-pissOff_allready
-127.34
-"this is a string \" with \" quotes"
+//this is simply the gitter box program
+function<void> main(){
+    int topX = 10;
+    int topY = 10;
+    int bottomX = 53;
+    int bottomY = 53;
+    int value = 0;
+    FILL <- 218;
+    while(1){
+        value <- RAND_BITS;
+        topX += value % 3;
+        value <- RAND_BITS;
+        topY += value % 3;
+        value <- RAND_BITS;
+        bottomX += value %3;
+        value <- RAND_BITS;
+        bottomX += value %3;
+        X1 <- topX;
+        Y1 <- topY;
+        X2 <- bottomX;
+        Y2 <- bottomY;
+        RECT <- 0;
+    }
+}
