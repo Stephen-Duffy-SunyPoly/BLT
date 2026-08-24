@@ -32,5 +32,8 @@ FetchContent_MakeAvailable(re2)
 
 add_executable(betterLanguageForTeenyAT main.cpp
         lexer.cpp
-        lexer.hpp)
+        lexer.hpp
+        ast_base.cpp
+        ast_base.hpp
+        DataTypes.hpp)
 target_link_libraries(betterLanguageForTeenyAT PRIVATE re2::re2)
