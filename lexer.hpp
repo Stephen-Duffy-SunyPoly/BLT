@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include "commonStructures.hpp"
 
 enum TokenType {
     // data type key words
@@ -70,6 +71,14 @@ struct LexedToken {
     std::string fileName;
     size_t line;
     size_t column;
+
+    [[nodiscard]] TokenLocationInfo getLocation() const {
+        return {
+            .fileName = fileName,
+            .line = line,
+            .column = column
+        };
+    }
 };
 
 const std::string WHITESPACE = " \t\n\r\f\v";

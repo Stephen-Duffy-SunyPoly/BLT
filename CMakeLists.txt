@@ -35,5 +35,6 @@ add_executable(betterLanguageForTeenyAT main.cpp
         lexer.hpp
         ast_base.cpp
         ast_base.hpp
-        DataTypes.hpp)
+        DataTypes.hpp
+        commonStructures.hpp)
 target_link_libraries(betterLanguageForTeenyAT PRIVATE re2::re2)
