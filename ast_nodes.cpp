@@ -13,9 +13,9 @@ std::string AstNumberLiteral::toString() {
 
 std::shared_ptr<AstNode> AstNumberLiteral::deepCopy() {
     if (dataType->getTypeId() == FIXED_TYPE_VALUE) {
-        return std::make_shared<AstNumberLiteral>(location, dataType, fixedValue);
+        return std::make_shared<AstNumberLiteral>(getLocation(), dataType, fixedValue);
     }
-    return std::make_shared<AstNumberLiteral>(location, dataType, intValue);
+    return std::make_shared<AstNumberLiteral>(getLocation(), dataType, intValue);
 }
 
 std::shared_ptr<DataType> AstNumberLiteral::getExpressionType() {
@@ -23,7 +23,8 @@ std::shared_ptr<DataType> AstNumberLiteral::getExpressionType() {
 }
 
 std::shared_ptr<AstExpression> AstNumberLiteral::resolve() {
-    return std::shared_ptr<AstExpression>(this);
+    //return a deep copy to ensure memory safety (dont make a new shared pointer of this because it could result in a double free later)
+    return std::static_pointer_cast<AstExpression>(deepCopy());
 }
 
 bool AstNumberLiteral::isCompileTimeValue() {
@@ -35,4 +36,59 @@ std::shared_ptr<void> AstNumberLiteral::getValue() {
         return std::shared_ptr<void>(new float(fixedValue));
     }
     return std::shared_ptr<void>(new int(intValue));
+}
+
+std::vector<std::shared_ptr<AstNode>> AstVariable::getNodes() {
+    return {};
+}
+
+std::string AstVariable::toString() {
+    return "variable: "+name;
+}
+
+std::shared_ptr<AstNode> AstVariable::deepCopy() {
+    //if it is a regular variable
+    if (!immediate) {
+        return std::make_shared<AstVariable>(getLocation(), dataType, name,false);
+    }
+    //if it is a compile time immediate
+    if (immediate && assembleImmediate) {
+        return std::make_shared<AstVariable>(getLocation(), dataType, name,true);
+    }
+    //it is now certainly a regular immediate, but of what type?
+    if (dataType->getTypeId() == FIXED_TYPE_VALUE) {
+        return std::make_shared<AstVariable>(getLocation(), dataType, name,fixedValue);
+    }
+    return std::make_shared<AstVariable>(getLocation(), dataType, name,intValue);
+
+}
+
+std::shared_ptr<DataType> AstVariable::getExpressionType() {
+    return dataType;
+}
+
+std::shared_ptr<AstExpression> AstVariable::resolve() {
+    if (immediate && !assembleImmediate) {
+        //return a number
+        if (dataType->getTypeId() == FIXED_TYPE_VALUE) {
+            return std::make_shared<AstNumberLiteral>(getLocation(), dataType, fixedValue);
+        }
+        return std::make_shared<AstNumberLiteral>(getLocation(), dataType, intValue);
+    }
+    return nullptr;
+}
+
+bool AstVariable::isCompileTimeValue() {
+    return immediate && !assembleImmediate;
+}
+
+std::shared_ptr<void> AstVariable::getValue() {
+    if (immediate && !assembleImmediate) {
+        //return a number
+        if (dataType->getTypeId() == FIXED_TYPE_VALUE) {
+            return std::shared_ptr<void>(new float(fixedValue));
+        }
+        return std::shared_ptr<void>(new int(intValue));
+    }
+    return nullptr;
 }
