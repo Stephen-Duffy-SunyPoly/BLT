@@ -36,5 +36,7 @@ add_executable(betterLanguageForTeenyAT main.cpp
         ast_base.cpp
         ast_base.hpp
         DataTypes.hpp
-        commonStructures.hpp)
+        commonStructures.hpp
+        ast_nodes.cpp
+        ast_nodes.hpp)
 target_link_libraries(betterLanguageForTeenyAT PRIVATE re2::re2)
