@@ -292,3 +292,47 @@ std::shared_ptr<AstExpression> AstDivideExpression::resolve() {
     }
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstModulusExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstModulusExpression::toString() {
+    return "ModulusExpression";
+}
+
+std::shared_ptr<AstNode> AstModulusExpression::deepCopy() {
+    return std::make_shared<AstModulusExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
+}
+
+std::shared_ptr<DataType> AstModulusExpression::getExpressionType() {
+    return left->getExpressionType(); // should just be int for this one
+}
+
+std::shared_ptr<AstExpression> AstModulusExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        int result = leftValue % rightValue;
+        if (result > 65535) {
+            //TODO check if warnings should be printed
+            std::cerr << "WARNING: Compile time value overflow at: " + getLocation().toString()<<std::endl;
+        }
+        return std::make_shared<AstNumberLiteral>(getLocation(), left->getExpressionType(), result);
+    }
+    return nullptr;
+}
