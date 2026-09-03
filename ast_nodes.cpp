@@ -92,3 +92,59 @@ std::shared_ptr<void> AstVariable::getValue() {
     }
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstAddExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstAddExpression::toString() {
+    return "AddExpression";
+}
+
+std::shared_ptr<AstNode> AstAddExpression::deepCopy() {
+    return std::make_shared<AstAddExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy()
+    ));
+}
+
+std::shared_ptr<DataType> AstAddExpression::getExpressionType() {
+    return left->getExpressionType();
+}
+
+std::shared_ptr<AstExpression> AstAddExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        bool fixed = left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE;
+        if (fixed) {
+            const float leftValue = *std::static_pointer_cast<float>(left->getValue());
+            const float rightValue = *std::static_pointer_cast<float>(right->getValue());
+            const float result = leftValue + rightValue;
+            if (result > 255.99609375f) {
+                //TODO check if warnings should be printed
+                std::cerr << "WARNING: Compile time fixed point value overflow at: " + getLocation().toString()<<std::endl;
+            }
+            return std::make_shared<AstNumberLiteral>(getLocation(), left->getExpressionType(), result);
+        }
+        //if not a fixed type expression
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        int result = leftValue + rightValue;
+        if (result > 65535) {
+            //TODO check if warnings should be printed
+            std::cerr << "WARNING: Compile time value overflow at: " + getLocation().toString()<<std::endl;
+        }
+        return std::make_shared<AstNumberLiteral>(getLocation(), left->getExpressionType(), result);
+    }
+    return nullptr;
+}

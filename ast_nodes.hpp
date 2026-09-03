@@ -1,4 +1,5 @@
 #pragma once
+#include <stdexcept>
 #include <utility>
 
 #include "ast_base.hpp"
@@ -16,17 +17,11 @@ public:
     }
 
     std::vector<std::shared_ptr<AstNode>> getNodes() override;
-
     std::string toString() override;
-
     std::shared_ptr<AstNode> deepCopy() override;
-
     std::shared_ptr<DataType> getExpressionType() override;
-
     std::shared_ptr<AstExpression> resolve() override;
-
     bool isCompileTimeValue() override;
-
     std::shared_ptr<void> getValue() override;
 };
 
@@ -51,16 +46,29 @@ public:
         AstExpression(location), dataType(std::move(dataType)), name(std::move(name)), immediate(true),fixedValue(value) {}
 
     std::vector<std::shared_ptr<AstNode>> getNodes() override;
-
     std::string toString() override;
-
     std::shared_ptr<AstNode> deepCopy() override;
-
     std::shared_ptr<DataType> getExpressionType() override;
-
     std::shared_ptr<AstExpression> resolve() override;
-
     bool isCompileTimeValue() override;
-
     std::shared_ptr<void> getValue() override;
+};
+
+class AstAddExpression: public AstExpression {
+    std::shared_ptr<AstExpression> left;
+    std::shared_ptr<AstExpression> right;
+public:
+    explicit AstAddExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left, std::shared_ptr<AstExpression> right):
+        AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        //validate the param are of valid types
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("AddExpression: Attempted to create add expression with incompatible types at: "+location.toString());
+        }
+    }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
 };
