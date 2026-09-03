@@ -303,3 +303,24 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+class AstTypeCastExpression : public AstExpression {
+    std::shared_ptr<AstExpression> data;
+    std::shared_ptr<DataType> typeOut;
+public:
+    explicit AstTypeCastExpression(const TokenLocationInfo &location, std::shared_ptr<DataType> typeOut, std::shared_ptr<AstExpression> data):
+    AstExpression(location), data(std::move(data)), typeOut(std::move(typeOut)) {
+        if (typeOut->getTypeId() == FIXED_TYPE_VALUE && data->getExpressionType()->getTypeId() == POINTER_TYPE_VALUE) {
+            throw std::logic_error("Attempted to cast from pointer to fixed at: "+location.toString());
+        }
+        if (typeOut->getTypeId() == POINTER_TYPE_VALUE && data->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("Attempted to cast from fixed to pointer at: "+location.toString());
+        }
+    }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};

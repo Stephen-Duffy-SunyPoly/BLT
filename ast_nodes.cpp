@@ -616,3 +616,42 @@ std::shared_ptr<AstExpression> AstBitwiseXorExpression::resolve() {
     }
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstTypeCastExpression::getNodes() {
+    return {data};
+}
+
+std::string AstTypeCastExpression::toString() {
+    return "TypeCastExpression";
+}
+
+std::shared_ptr<AstNode> AstTypeCastExpression::deepCopy() {
+    return std::make_shared<AstTypeCastExpression>(getLocation(),typeOut,std::static_pointer_cast<AstExpression>(data->deepCopy()));
+}
+
+std::shared_ptr<DataType> AstTypeCastExpression::getExpressionType() {
+    return typeOut;
+}
+
+std::shared_ptr<AstExpression> AstTypeCastExpression::resolve() {
+    std::shared_ptr<AstExpression> tmp = data->resolve();
+    if (tmp != nullptr) {
+        data = tmp;
+    }
+    if (data->isCompileTimeValue()) {
+
+        if (data->getExpressionType()->getTypeId() == INT_TYPE_VALUE && typeOut->getTypeId() == FIXED_TYPE_VALUE) {
+            //int -> fixed
+            float result = static_cast<float>(*std::static_pointer_cast<int>(data->getValue()));
+            return std::make_shared<AstNumberLiteral>(getLocation(), typeOut, result);
+        } else if (data->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE && typeOut->getTypeId() == INT_TYPE_VALUE) {
+            //fixed -> int
+            int result = static_cast<int>(*std::static_pointer_cast<float>(data->getValue()));
+            return std::make_shared<AstNumberLiteral>(getLocation(), typeOut, result);
+        } else {
+            //other
+            return data;
+        }
+    }
+    return nullptr;
+}
