@@ -81,9 +81,30 @@ public:
         AstExpression(location), left(std::move(left)), right(std::move(right)) {
         //validate the param are of valid types
         if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
-            throw std::logic_error("AddExpression: Attempted to create subtract expression with incompatible types at: "+location.toString());
+            throw std::logic_error("SubtractExpression: Attempted to create subtract expression with incompatible types at: "+location.toString());
         }
     }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstMultiplyExpression: public AstExpression {
+    std::shared_ptr<AstExpression> left;
+    std::shared_ptr<AstExpression> right;
+public:
+    explicit AstMultiplyExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left, std::shared_ptr<AstExpression> right):
+       AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("MultiplyExpression: Attempted to create subtract expression with incompatible types at: "+location.toString());
+        }
+        if (left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("Attempted to use regular multiply expression for fixed point multiplication! at: "+location.toString());
+        }
+    }
+
     std::vector<std::shared_ptr<AstNode>> getNodes() override;
     std::string toString() override;
     std::shared_ptr<AstNode> deepCopy() override;

@@ -204,3 +204,47 @@ std::shared_ptr<AstExpression> AstSubtractExpression::resolve() {
     }
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstMultiplyExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstMultiplyExpression::toString() {
+    return "MultiplyExpression";
+}
+
+std::shared_ptr<AstNode> AstMultiplyExpression::deepCopy() {
+    return std::make_shared<AstMultiplyExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
+}
+
+std::shared_ptr<DataType> AstMultiplyExpression::getExpressionType() {
+    return left->getExpressionType();
+}
+
+std::shared_ptr<AstExpression> AstMultiplyExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        int result = leftValue * rightValue;
+        if (result > 65535) {
+            //TODO check if warnings should be printed
+            std::cerr << "WARNING: Compile time value overflow at: " + getLocation().toString()<<std::endl;
+        }
+        return std::make_shared<AstNumberLiteral>(getLocation(), left->getExpressionType(), result);
+    }
+    return nullptr;
+}
