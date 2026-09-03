@@ -449,3 +449,38 @@ std::shared_ptr<AstExpression> AstPointerDerefExpression::resolve() {
     //this expression type cannot be resolved at compile time
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstNegateExpression::getNodes() {
+    return {value};
+}
+
+std::string AstNegateExpression::toString() {
+    return "NegateExpression";
+}
+
+std::shared_ptr<AstNode> AstNegateExpression::deepCopy() {
+    return std::make_shared<AstNegateExpression>(getLocation(),std::static_pointer_cast<AstExpression>(value->deepCopy()));
+}
+
+std::shared_ptr<DataType> AstNegateExpression::getExpressionType() {
+    return value->getExpressionType();
+}
+
+std::shared_ptr<AstExpression> AstNegateExpression::resolve() {
+    std::shared_ptr<AstExpression> tmp = value->resolve();
+    if (tmp != nullptr) {
+        value = tmp;
+    }
+    //check if both sides values are currently known
+    if (value->isCompileTimeValue()) {
+        //combine them
+        const int leftValue = *std::static_pointer_cast<int>(value->getValue());
+        int result = -leftValue;
+        if (result > 65535) {
+            //TODO check if warnings should be printed
+            std::cerr << "WARNING: Compile time value overflow at: " + getLocation().toString()<<std::endl;
+        }
+        return std::make_shared<AstNumberLiteral>(getLocation(), value->getExpressionType(), result);
+    }
+    return nullptr;
+}

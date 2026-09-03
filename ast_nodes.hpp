@@ -217,3 +217,20 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+class AstNegateExpression : public AstExpression {
+    std::shared_ptr<AstExpression> value;
+public:
+    explicit AstNegateExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> value):
+        AstExpression(location), value(std::move(value)) {
+        if (value->getExpressionType()->getTypeId() != INT_TYPE_VALUE) {
+            throw std::logic_error("only int type data can be negated at: "+location.toString());
+        }
+    }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
