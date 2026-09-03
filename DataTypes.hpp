@@ -35,7 +35,7 @@ public:
     /**Get a pointer to the subtype of this data type
      * @return A pointer to the sub type of this data type or null if there is not sub type
      */
-    virtual DataType* getSubType() {
+    virtual std::shared_ptr<DataType> getSubType() {
         return nullptr;
     }
 };
@@ -82,13 +82,13 @@ public:
         return TYPE_ID;
     }
     bool typeEqual(DataType* other) override {
-        return TYPE_ID == other->getTypeId() && referenceType->typeEqual(other->getSubType());
+        return TYPE_ID == other->getTypeId() && referenceType->typeEqual(other->getSubType().get());
     }
     bool isPointer() override {
         return true;
     }
-    DataType* getSubType() override {
-        return referenceType.get();
+    std::shared_ptr<DataType> getSubType() override {
+        return referenceType;
     }
 };
 

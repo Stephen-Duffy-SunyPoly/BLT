@@ -424,3 +424,28 @@ std::shared_ptr<AstExpression> AstRightShiftExpression::resolve() {
     }
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstPointerDerefExpression::getNodes() {
+    return {pointer};
+}
+
+std::string AstPointerDerefExpression::toString() {
+    return "PointerValueExpression";
+}
+
+std::shared_ptr<AstNode> AstPointerDerefExpression::deepCopy() {
+    return std::make_shared<AstPointerDerefExpression>(getLocation(),std::static_pointer_cast<AstExpression>(pointer->deepCopy()));
+}
+
+std::shared_ptr<DataType> AstPointerDerefExpression::getExpressionType() {
+    return pointer->getExpressionType()->getSubType();
+}
+
+std::shared_ptr<AstExpression> AstPointerDerefExpression::resolve() {
+    const std::shared_ptr<AstExpression> tmp = pointer->resolve();
+    if (tmp != nullptr) {
+        pointer = tmp;
+    }
+    //this expression type cannot be resolved at compile time
+    return nullptr;
+}

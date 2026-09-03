@@ -200,3 +200,20 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+class AstPointerDerefExpression : public AstExpression {
+    std::shared_ptr<AstExpression> pointer;
+public:
+    explicit AstPointerDerefExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> pointer):
+    AstExpression(location), pointer(std::move(pointer)) {
+        if (pointer->getExpressionType()->getTypeId() != POINTER_TYPE_VALUE) {
+            throw std::logic_error("Attempted to dereference a value that is not a pointer! at: "+location.toString());
+        }
+    }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
