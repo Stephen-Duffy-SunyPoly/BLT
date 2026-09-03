@@ -336,3 +336,91 @@ std::shared_ptr<AstExpression> AstModulusExpression::resolve() {
     }
     return nullptr;
 }
+
+inline std::vector<std::shared_ptr<AstNode>> AstLeftShiftExpression::getNodes() {
+    return {left,right};
+}
+
+inline std::string AstLeftShiftExpression::toString() {
+    return "LeftShiftExpression";
+}
+
+inline std::shared_ptr<AstNode> AstLeftShiftExpression::deepCopy() {
+    return std::make_shared<AstLeftShiftExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
+}
+
+inline std::shared_ptr<DataType> AstLeftShiftExpression::getExpressionType() {
+    return left->getExpressionType();
+}
+
+inline std::shared_ptr<AstExpression> AstLeftShiftExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        int result = leftValue << rightValue;
+        if (result > 65535) {
+            //TODO check if warnings should be printed
+            std::cerr << "WARNING: Compile time value overflow at: " + getLocation().toString()<<std::endl;
+        }
+        return std::make_shared<AstNumberLiteral>(getLocation(), left->getExpressionType(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstRightShiftExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstRightShiftExpression::toString() {
+    return "RightShiftExpression";
+}
+
+std::shared_ptr<AstNode> AstRightShiftExpression::deepCopy() {
+    return std::make_shared<AstRightShiftExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
+}
+
+std::shared_ptr<DataType> AstRightShiftExpression::getExpressionType() {
+    return left->getExpressionType();
+}
+
+std::shared_ptr<AstExpression> AstRightShiftExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        int result = leftValue >> rightValue;
+        if (result > 65535) {
+            //TODO check if warnings should be printed
+            std::cerr << "WARNING: Compile time value overflow at: " + getLocation().toString()<<std::endl;
+        }
+        return std::make_shared<AstNumberLiteral>(getLocation(), left->getExpressionType(), result);
+    }
+    return nullptr;
+}

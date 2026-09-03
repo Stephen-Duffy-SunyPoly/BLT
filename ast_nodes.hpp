@@ -151,3 +151,52 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+
+class AstLeftShiftExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left;
+    std::shared_ptr<AstExpression> right;
+public:
+    explicit AstLeftShiftExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left, std::shared_ptr<AstExpression> right):
+        AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("LeftShiftExpression: Attempted to create subtract expression with incompatible types at: "+location.toString());
+        }
+        if (left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("Attempted to use left shift operation on fixed type value! at: "+location.toString());
+        }
+        if (right->getExpressionType()->getTypeId() == POINTER_TYPE_VALUE) {
+            throw std::logic_error("Attempted to bit shift a value by a pinter at: "+location.toString());
+        }
+    }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstRightShiftExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left;
+    std::shared_ptr<AstExpression> right;
+public:
+    explicit AstRightShiftExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left, std::shared_ptr<AstExpression> right):
+        AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("RightShiftExpression: Attempted to create subtract expression with incompatible types at: "+location.toString());
+        }
+        if (left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("Attempted to use right shift operation on fixed type value! at: "+location.toString());
+        }
+        if (right->getExpressionType()->getTypeId() == POINTER_TYPE_VALUE) {
+            throw std::logic_error("Attempted to bit shift a value by a pinter at: "+location.toString());
+        }
+    }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
