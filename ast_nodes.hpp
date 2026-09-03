@@ -111,3 +111,23 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+class AstDivideExpression: public AstExpression {
+    std::shared_ptr<AstExpression> left;
+    std::shared_ptr<AstExpression> right;
+public:
+    explicit AstDivideExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left, std::shared_ptr<AstExpression> right):
+        AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("DivideExpression: Attempted to create subtract expression with incompatible types at: "+location.toString());
+        }
+        if (left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("Attempted to use regular divide expression for fixed point division! at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
