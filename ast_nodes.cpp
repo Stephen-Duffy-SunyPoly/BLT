@@ -484,3 +484,135 @@ std::shared_ptr<AstExpression> AstNegateExpression::resolve() {
     }
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstBitwiseAndExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstBitwiseAndExpression::toString() {
+    return "BitwiseAndExpression";
+}
+
+std::shared_ptr<AstNode> AstBitwiseAndExpression::deepCopy() {
+    return std::make_shared<AstBitwiseAndExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
+}
+
+std::shared_ptr<DataType> AstBitwiseAndExpression::getExpressionType() {
+    return left->getExpressionType();
+}
+
+std::shared_ptr<AstExpression> AstBitwiseAndExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        int result = leftValue & rightValue;
+        if (result > 65535) {
+            //TODO check if warnings should be printed
+            std::cerr << "WARNING: Compile time value overflow at: " + getLocation().toString()<<std::endl;
+        }
+        return std::make_shared<AstNumberLiteral>(getLocation(), left->getExpressionType(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstBitwiseOrExpression::getNodes() {
+    return {left, right};
+}
+
+std::string AstBitwiseOrExpression::toString() {
+    return "BitwiseOrExpression";
+}
+
+std::shared_ptr<AstNode> AstBitwiseOrExpression::deepCopy() {
+    return std::make_shared<AstBitwiseOrExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
+}
+
+std::shared_ptr<DataType> AstBitwiseOrExpression::getExpressionType() {
+    return left->getExpressionType();
+}
+
+std::shared_ptr<AstExpression> AstBitwiseOrExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        int result = leftValue | rightValue;
+        if (result > 65535) {
+            //TODO check if warnings should be printed
+            std::cerr << "WARNING: Compile time value overflow at: " + getLocation().toString()<<std::endl;
+        }
+        return std::make_shared<AstNumberLiteral>(getLocation(), left->getExpressionType(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstBitwiseXorExpression::getNodes() {
+    return {left, right};
+}
+
+std::string AstBitwiseXorExpression::toString() {
+    return "BitwiseXorExpression";
+}
+
+std::shared_ptr<AstNode> AstBitwiseXorExpression::deepCopy() {
+    return std::make_shared<AstBitwiseXorExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
+}
+
+std::shared_ptr<DataType> AstBitwiseXorExpression::getExpressionType() {
+    return left->getExpressionType();
+}
+
+std::shared_ptr<AstExpression> AstBitwiseXorExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        int result = leftValue ^ rightValue;
+        if (result > 65535) {
+            //TODO check if warnings should be printed
+            std::cerr << "WARNING: Compile time value overflow at: " + getLocation().toString()<<std::endl;
+        }
+        return std::make_shared<AstNumberLiteral>(getLocation(), left->getExpressionType(), result);
+    }
+    return nullptr;
+}

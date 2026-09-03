@@ -234,3 +234,72 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+class AstBitwiseAndExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstBitwiseAndExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+        AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("BitwiseAndExpression: Attempted to create subtract expression with incompatible types at: "+location.toString());
+        }
+        if (left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("Attempted to use bitwise and operation on fixed type value! at: "+location.toString());
+        }
+        if (right->getExpressionType()->getTypeId() == POINTER_TYPE_VALUE) {
+            throw std::logic_error("Attempted to and a value with a pinter at: "+location.toString());
+        }
+    }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstBitwiseOrExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstBitwiseOrExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+        AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("BitwiseOrExpression: Attempted to create subtract expression with incompatible types at: "+location.toString());
+        }
+        if (left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("Attempted to use bitwise or operation on fixed type value! at: "+location.toString());
+        }
+        if (right->getExpressionType()->getTypeId() == POINTER_TYPE_VALUE) {
+            throw std::logic_error("Attempted to or a value with a pinter at: "+location.toString());
+        }
+    }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstBitwiseXorExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstBitwiseXorExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+        AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("BitwiseXorExpression: Attempted to create subtract expression with incompatible types at: "+location.toString());
+        }
+        if (left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("Attempted to use bitwise xor operation on fixed type value! at: "+location.toString());
+        }
+        if (right->getExpressionType()->getTypeId() == POINTER_TYPE_VALUE) {
+            throw std::logic_error("Attempted to xor a value with a pinter at: "+location.toString());
+        }
+    }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
