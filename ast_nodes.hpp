@@ -72,3 +72,21 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+class AstSubtractExpression: public AstExpression {
+    std::shared_ptr<AstExpression> left;
+    std::shared_ptr<AstExpression> right;
+public:
+    explicit AstSubtractExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left, std::shared_ptr<AstExpression> right):
+        AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        //validate the param are of valid types
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("AddExpression: Attempted to create subtract expression with incompatible types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
