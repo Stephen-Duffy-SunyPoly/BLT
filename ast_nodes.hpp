@@ -324,3 +324,16 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+class AstVariableAddressExpression : public AstExpression {
+    std::shared_ptr<AstVariable> variable;
+public:
+    explicit AstVariableAddressExpression(const TokenLocationInfo &location, std::shared_ptr<AstVariable> variable):
+        AstExpression(location), variable(std::move(variable)) {}//parse time validation
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};

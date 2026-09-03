@@ -655,3 +655,23 @@ std::shared_ptr<AstExpression> AstTypeCastExpression::resolve() {
     }
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstVariableAddressExpression::getNodes() {
+    return {variable};
+}
+
+std::string AstVariableAddressExpression::toString() {
+    return "VariableAddressExpression";
+}
+
+std::shared_ptr<AstNode> AstVariableAddressExpression::deepCopy() {
+    return std::make_shared<AstVariableAddressExpression>(getLocation(),std::static_pointer_cast<AstVariable>(variable->deepCopy()));
+}
+
+std::shared_ptr<DataType> AstVariableAddressExpression::getExpressionType() {
+    return std::make_shared<PointerType>(variable->getExpressionType());
+}
+
+std::shared_ptr<AstExpression> AstVariableAddressExpression::resolve() {
+    return nullptr;
+}
