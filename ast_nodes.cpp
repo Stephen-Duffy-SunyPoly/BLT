@@ -705,3 +705,16 @@ std::shared_ptr<AstExpression> AstFunctionCallExpression::resolve() {
     }
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstValueAssignmentStatement::getNodes() {
+    return {expression};
+}
+std::string AstValueAssignmentStatement::toString() {
+    return "ValueAssignmentStatement";
+}
+std::shared_ptr<AstNode> AstValueAssignmentStatement::deepCopy() {
+    return std::make_shared<AstValueAssignmentStatement>(getLocation(),
+        std::static_pointer_cast<AstExpression>(expression->deepCopy()),
+        valueType,immediateValue
+    );
+}

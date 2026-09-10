@@ -352,3 +352,53 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+class AstValueAssignmentStatement: public AstNode {
+    std::string varName;
+    std::shared_ptr<DataType> valueType;
+    std::shared_ptr<AstExpression> expression;
+    bool immediateValue;
+public:
+    explicit AstValueAssignmentStatement(const TokenLocationInfo &location, std::shared_ptr<AstExpression> expression, std::shared_ptr<DataType> valueType, bool immediateValue):
+        AstNode(location), expression(std::move(expression)), valueType(std::move(valueType)), immediateValue(immediateValue) {
+        if (immediateValue) {
+            auto resolved = expression->resolve();
+            if (resolved->isCompileTimeValue()) {
+                //TODO save this value somewhere
+                expression = resolved;
+            } else {
+                throw std::logic_error("Immediates must be resolvable at compile time. at: "+location.toString());
+            }
+        }
+    }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+};
+class AstPointerValueAssignmentStatement: public AstNode {
+    std::string varName;
+    std::shared_ptr<DataType> pointerType;
+    std::shared_ptr<AstExpression> expression;
+public:
+    explicit AstPointerValueAssignmentStatement(const TokenLocationInfo &location, std::shared_ptr<DataType> pointerType, std::shared_ptr<AstExpression> expression):
+        AstNode(location), expression(std::move(expression)), pointerType(std::move(pointerType)) {
+        //type validation
+        if (!pointerType->isPointer()) {
+            throw std::runtime_error("Parser selected incorrect usage of pointer value operator at: "+location.toString());
+        }
+        std::shared_ptr<DataType> refrenceType = pointerType->getSubType();
+        std::shared_ptr<DataType> expressionType = expression->getExpressionType();
+        if (!refrenceType->typeEqual(expressionType.get())) {
+            //if the types do not match exactly, check if they are similar
+            if (refrenceType->isPointer() && expressionType->isPointer()) {
+                //if both sides relate to pointer they must match exactly. at this point they would not so error
+                throw std::logic_error("Attempted to assign pointer value to incompatible type at: "+location.toString());
+            }
+            //but first check if this is pointer value to pointer value
+            if (!dataTypeCompatible(refrenceType->getTypeId(), expressionType->getTypeId())) {
+                throw std::logic_error("Attempted to assign pointer value to incompatible type at: "+location.toString());
+            }
+        }
+    }
+};
