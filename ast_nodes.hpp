@@ -337,3 +337,18 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+class AstFunctionCallExpression : public AstExpression {
+    std::string functionName;
+    std::vector<std::shared_ptr<AstExpression>> arguments;
+    std::shared_ptr<DataType> likelyReturnType;//note: at the time of parsing we will not know the actual return type if thus function. we will just have our best guess based on context
+public:
+    explicit AstFunctionCallExpression(const TokenLocationInfo &location, std::string functionName, std::vector<std::shared_ptr<AstExpression>> arguments, std::shared_ptr<DataType> likelyReturnType):
+        AstExpression(location), functionName(std::move(functionName)), arguments(std::move(arguments)), likelyReturnType(std::move(likelyReturnType)) {}
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};

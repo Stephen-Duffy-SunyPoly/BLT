@@ -675,3 +675,33 @@ std::shared_ptr<DataType> AstVariableAddressExpression::getExpressionType() {
 std::shared_ptr<AstExpression> AstVariableAddressExpression::resolve() {
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstFunctionCallExpression::getNodes() {
+    std::vector<std::shared_ptr<AstNode>> nodes;
+    for (auto &exp: arguments) {
+        nodes.push_back(exp);
+    }
+    return nodes;
+}
+
+std::string AstFunctionCallExpression::toString() {
+    return "FunctionCallExpression: "+functionName;
+}
+
+std::shared_ptr<AstNode> AstFunctionCallExpression::deepCopy() {
+    return std::make_shared<AstFunctionCallExpression>(getLocation(),functionName,arguments,likelyReturnType);
+}
+
+std::shared_ptr<DataType> AstFunctionCallExpression::getExpressionType() {
+    return likelyReturnType;
+}
+
+std::shared_ptr<AstExpression> AstFunctionCallExpression::resolve() {
+    for (auto & argument : arguments) {
+        std::shared_ptr<AstExpression> tmp = argument->resolve();
+        if (tmp != nullptr) {
+            argument = tmp;
+        }
+    }
+    return nullptr;
+}
