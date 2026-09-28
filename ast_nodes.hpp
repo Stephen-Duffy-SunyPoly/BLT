@@ -352,3 +352,155 @@ public:
     std::shared_ptr<DataType> getExpressionType() override;
     std::shared_ptr<AstExpression> resolve() override;
 };
+
+class AstGreaterThanOrEqualExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstGreaterThanOrEqualExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+    AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        //validate the param are of valid types
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("GreaterThanOrEqualExpression: Attempted to create gte expression with incompatible types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstGreaterThanExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstGreaterThanExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+    AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        //validate the param are of valid types
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("GreaterThanExpression: Attempted to create gt expression with incompatible types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstLessThanOrEqualExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstLessThanOrEqualExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+    AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        //validate the param are of valid types
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("LessThanOrEqualExpression: Attempted to create lte expression with incompatible types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstLessThanExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstLessThanExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+    AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        //validate the param are of valid types
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("LessThanExpression: Attempted to create lt expression with incompatible types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstEqualExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstEqualExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+    AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        //validate the param are of valid types
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("EqualsExpression: Attempted to create equals expression with incompatible types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstNotEqualExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstNotEqualExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+    AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        //validate the param are of valid types
+        if (!dataTypeCompatible(left->getExpressionType().get(), right->getExpressionType().get())) {
+            throw std::logic_error("NotEqualExpression: Attempted to create not equal expression with incompatible types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstLogicalAndExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstLogicalAndExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+    AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        //validate the param are of valid types
+        if (left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE || right->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("LogicalAndExpression: Attempted to create logical and expression with incompatible types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstLogicalOrExpression : public AstExpression {
+    std::shared_ptr<AstExpression> left, right;
+public:
+    explicit AstLogicalOrExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> left,std::shared_ptr<AstExpression> right):
+    AstExpression(location), left(std::move(left)), right(std::move(right)) {
+        //validate the param are of valid types
+        if (left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE || right->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("LogicalOrExpression: Attempted to create logical or expression with incompatible types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};
+
+class AstLogicalNotExpression : public AstExpression {
+    std::shared_ptr<AstExpression> data;
+public:
+    explicit AstLogicalNotExpression(const TokenLocationInfo &location, std::shared_ptr<AstExpression> data):
+    AstExpression(location), data(std::move(data)) {
+        if (data->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE) {
+            throw std::logic_error("LogicalNotExpression: Attempted to create logical not expression with incompatible types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+    std::shared_ptr<DataType> getExpressionType() override;
+    std::shared_ptr<AstExpression> resolve() override;
+};

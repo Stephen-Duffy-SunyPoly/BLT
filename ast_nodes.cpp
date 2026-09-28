@@ -705,3 +705,379 @@ std::shared_ptr<AstExpression> AstFunctionCallExpression::resolve() {
     }
     return nullptr;
 }
+
+std::vector<std::shared_ptr<AstNode>> AstGreaterThanOrEqualExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstGreaterThanOrEqualExpression::toString() {
+    return "GreaterThanOrEqualExpression";
+}
+
+std::shared_ptr<AstNode> AstGreaterThanOrEqualExpression::deepCopy() {
+    return std::make_shared<AstGreaterThanOrEqualExpression>(getLocation(),left,right);
+}
+
+std::shared_ptr<DataType> AstGreaterThanOrEqualExpression::getExpressionType() {
+    return std::make_shared<IntType>();
+}
+
+std::shared_ptr<AstExpression> AstGreaterThanOrEqualExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        bool fixed = left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE;
+        if (fixed) {
+            const float leftValue = *std::static_pointer_cast<float>(left->getValue());
+            const float rightValue = *std::static_pointer_cast<float>(right->getValue());
+            const int result = leftValue >= rightValue;
+            return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+        }
+        //if not a fixed type expression
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        const int result = leftValue >= rightValue;
+        return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstGreaterThanExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstGreaterThanExpression::toString() {
+    return "GreaterThanExpression";
+}
+
+std::shared_ptr<AstNode> AstGreaterThanExpression::deepCopy() {
+    return std::make_shared<AstGreaterThanExpression>(getLocation(),left,right);
+}
+
+std::shared_ptr<DataType> AstGreaterThanExpression::getExpressionType() {
+    return std::make_shared<IntType>();
+}
+
+std::shared_ptr<AstExpression> AstGreaterThanExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        bool fixed = left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE;
+        if (fixed) {
+            const float leftValue = *std::static_pointer_cast<float>(left->getValue());
+            const float rightValue = *std::static_pointer_cast<float>(right->getValue());
+            const int result = leftValue > rightValue;
+            return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+        }
+        //if not a fixed type expression
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        const int result = leftValue > rightValue;
+        return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstLessThanOrEqualExpression::getNodes() {
+    return getNodes();
+}
+
+std::string AstLessThanOrEqualExpression::toString() {
+    return "LessThanOrEqualExpression";
+}
+
+std::shared_ptr<AstNode> AstLessThanOrEqualExpression::deepCopy() {
+    return std::make_shared<AstLessThanOrEqualExpression>(getLocation(),left,right);
+}
+
+std::shared_ptr<DataType> AstLessThanOrEqualExpression::getExpressionType() {
+    return std::make_shared<IntType>();
+}
+
+std::shared_ptr<AstExpression> AstLessThanOrEqualExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        bool fixed = left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE;
+        if (fixed) {
+            const float leftValue = *std::static_pointer_cast<float>(left->getValue());
+            const float rightValue = *std::static_pointer_cast<float>(right->getValue());
+            const int result = leftValue <= rightValue;
+            return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+        }
+        //if not a fixed type expression
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        const int result = leftValue <= rightValue;
+        return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstLessThanExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstLessThanExpression::toString() {
+    return "LessThanExpression";
+}
+
+std::shared_ptr<AstNode> AstLessThanExpression::deepCopy() {
+    return std::make_shared<AstLessThanExpression>(getLocation(),left,right);
+}
+
+std::shared_ptr<DataType> AstLessThanExpression::getExpressionType() {
+    return std::make_shared<IntType>();
+}
+
+std::shared_ptr<AstExpression> AstLessThanExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        bool fixed = left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE;
+        if (fixed) {
+            const float leftValue = *std::static_pointer_cast<float>(left->getValue());
+            const float rightValue = *std::static_pointer_cast<float>(right->getValue());
+            const int result = leftValue < rightValue;
+            return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+        }
+        //if not a fixed type expression
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        const int result = leftValue < rightValue;
+        return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstEqualExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstEqualExpression::toString() {
+    return "EqualExpression";
+}
+
+std::shared_ptr<AstNode> AstEqualExpression::deepCopy() {
+    return std::make_shared<AstEqualExpression>(getLocation(),left,right);
+}
+
+std::shared_ptr<DataType> AstEqualExpression::getExpressionType() {
+    return std::make_shared<IntType>();
+}
+
+std::shared_ptr<AstExpression> AstEqualExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        bool fixed = left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE;
+        if (fixed) {
+            const float leftValue = *std::static_pointer_cast<float>(left->getValue());
+            const float rightValue = *std::static_pointer_cast<float>(right->getValue());
+            const int result = leftValue == rightValue;
+            return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+        }
+        //if not a fixed type expression
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        const int result = leftValue == rightValue;
+        return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstNotEqualExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstNotEqualExpression::toString() {
+    return "NotEqualExpression";
+}
+
+std::shared_ptr<AstNode> AstNotEqualExpression::deepCopy() {
+    return std::make_shared<AstNotEqualExpression>(getLocation(),left,right);
+}
+
+std::shared_ptr<DataType> AstNotEqualExpression::getExpressionType() {
+    return std::make_shared<IntType>();
+}
+
+std::shared_ptr<AstExpression> AstNotEqualExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //combine them
+        bool fixed = left->getExpressionType()->getTypeId() == FIXED_TYPE_VALUE;
+        if (fixed) {
+            const float leftValue = *std::static_pointer_cast<float>(left->getValue());
+            const float rightValue = *std::static_pointer_cast<float>(right->getValue());
+            const int result = leftValue != rightValue;
+            return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+        }
+        //if not a fixed type expression
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        const int result = leftValue != rightValue;
+        return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstLogicalAndExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstLogicalAndExpression::toString() {
+    return "LogicalAndExpression";
+}
+
+std::shared_ptr<AstNode> AstLogicalAndExpression::deepCopy() {
+    return std::make_shared<AstLogicalAndExpression>(getLocation(),left,right);
+}
+
+std::shared_ptr<DataType> AstLogicalAndExpression::getExpressionType() {
+    return std::make_shared<IntType>();
+}
+
+std::shared_ptr<AstExpression> AstLogicalAndExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //if not a fixed type expression
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        const int result = leftValue && rightValue;
+        return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstLogicalOrExpression::getNodes() {
+    return {left,right};
+}
+
+std::string AstLogicalOrExpression::toString() {
+    return "LogicalOrExpression";
+}
+
+std::shared_ptr<AstNode> AstLogicalOrExpression::deepCopy() {
+    return std::make_shared<AstLogicalOrExpression>(getLocation(),left,right);
+}
+
+std::shared_ptr<DataType> AstLogicalOrExpression::getExpressionType() {
+    return std::make_shared<IntType>();
+}
+
+std::shared_ptr<AstExpression> AstLogicalOrExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = left->resolve();
+    if (tmp != nullptr) {
+        left = tmp;
+    }
+    tmp = right->resolve();
+    if (tmp != nullptr) {
+        right = tmp;
+    }
+    //check if both sides values are currently known
+    if (left->isCompileTimeValue() && right->isCompileTimeValue()) {
+        //if not a fixed type expression
+        const int leftValue = *std::static_pointer_cast<int>(left->getValue());
+        const int rightValue = *std::static_pointer_cast<int>(right->getValue());
+        const int result = leftValue || rightValue;
+        return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+    }
+    return nullptr;
+}
+
+std::vector<std::shared_ptr<AstNode>> AstLogicalNotExpression::getNodes() {
+    return {data};
+}
+
+std::string AstLogicalNotExpression::toString() {
+    return "LogicalNotExpression";
+}
+
+std::shared_ptr<AstNode> AstLogicalNotExpression::deepCopy() {
+    return std::make_shared<AstLogicalNotExpression>(getLocation(),data);
+}
+
+std::shared_ptr<DataType> AstLogicalNotExpression::getExpressionType() {
+    return std::make_shared<IntType>();
+}
+
+std::shared_ptr<AstExpression> AstLogicalNotExpression::resolve() {
+    //attempt resolution of both branches
+    std::shared_ptr<AstExpression> tmp = data->resolve();
+    if (tmp != nullptr) {
+        data = tmp;
+    }
+    //check if both sides values are currently known
+    if (data->isCompileTimeValue()) {
+        //if not a fixed type expression
+        const int datatValue = *std::static_pointer_cast<int>(data->getValue());
+        const int result = !datatValue;
+        return std::make_shared<AstNumberLiteral>(getLocation(), std::make_shared<IntType>(), result);
+    }
+    return nullptr;
+}
