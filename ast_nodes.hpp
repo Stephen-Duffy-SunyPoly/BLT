@@ -528,6 +528,8 @@ public:
     std::string toString() override;
     std::shared_ptr<AstNode> deepCopy() override;
 };
+
+//take the value of an expression and store it in a pointer
 class AstPointerValueAssignmentStatement: public AstNode {
     std::string varName;
     std::shared_ptr<DataType> pointerType;
@@ -554,3 +556,8 @@ public:
         }
     }
 };
+
+//take value at a pointer expression and dereference it to a variable
+
+
+//take the value at a pointer expression and store it in a different pointer
