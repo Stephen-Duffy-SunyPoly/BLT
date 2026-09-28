@@ -531,26 +531,26 @@ public:
 
 //take the value of an expression and store it in a pointer
 class AstPointerValueAssignmentStatement: public AstNode {
-    std::string varName;
-    std::shared_ptr<DataType> pointerType;
-    std::shared_ptr<AstExpression> expression;
+    std::string varName; // left hand side
+    std::shared_ptr<DataType> pointerType; //type pointed to by left hand side
+    std::shared_ptr<AstExpression> expression; //right hand side
 public:
     explicit AstPointerValueAssignmentStatement(const TokenLocationInfo &location, std::shared_ptr<DataType> pointerType, std::shared_ptr<AstExpression> expression):
-        AstNode(location), expression(std::move(expression)), pointerType(std::move(pointerType)) {
+        AstNode(location), pointerType(std::move(pointerType)), expression(std::move(expression)) {
         //type validation
         if (!pointerType->isPointer()) {
-            throw std::runtime_error("Parser selected incorrect usage of pointer value operator at: "+location.toString());
+            throw std::runtime_error("Parser selected incorrect usage of pointer value operator(str) at: "+location.toString());
         }
-        std::shared_ptr<DataType> refrenceType = pointerType->getSubType();
+        std::shared_ptr<DataType> referenceType = pointerType->getSubType();
         std::shared_ptr<DataType> expressionType = expression->getExpressionType();
-        if (!refrenceType->typeEqual(expressionType.get())) {
+        if (!referenceType->typeEqual(expressionType.get())) {
             //if the types do not match exactly, check if they are similar
-            if (refrenceType->isPointer() && expressionType->isPointer()) {
+            if (referenceType->isPointer() && expressionType->isPointer()) {
                 //if both sides relate to pointer they must match exactly. at this point they would not so error
                 throw std::logic_error("Attempted to assign pointer value to incompatible type at: "+location.toString());
             }
             //but first check if this is pointer value to pointer value
-            if (!dataTypeCompatible(refrenceType->getTypeId(), expressionType->getTypeId())) {
+            if (!dataTypeCompatible(referenceType->getTypeId(), expressionType->getTypeId())) {
                 throw std::logic_error("Attempted to assign pointer value to incompatible type at: "+location.toString());
             }
         }
@@ -562,6 +562,48 @@ public:
 };
 
 //take value at a pointer expression and dereference it to a variable
+class AstPointerDereferenceAssignmentStatement: public AstNode {
+    std::string varName; // left hand side
+    std::shared_ptr<DataType> varType; //left hand side type
+    std::shared_ptr<AstExpression> expression;
+public:
+    explicit AstPointerDereferenceAssignmentStatement(const TokenLocationInfo &location, std::string varName,std::shared_ptr<DataType> varType, std::shared_ptr<AstExpression> expression):
+    AstNode(location), varName(std::move(varName)), varType(std::move(varType)), expression(std::move(expression)) {
+        //check if the right hand side is a pointer
+        if (!expression->getExpressionType()->isPointer()) {
+            throw std::runtime_error("Parser selected incorrect usage of pointer value operator(deref) at: "+location.toString());
+        }
+        const std::shared_ptr<DataType> referenceType = expression->getExpressionType()->getSubType();
+        if (!varType->typeEqual(referenceType.get())) {
+            throw std::logic_error("Attempted to dereference pointer value to incompatible type at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+};
 
 
 //take the value at a pointer expression and store it in a different pointer
+class AstPointerValueToPointerValueAssignmentStatement: public AstNode {
+    std::string varName; //left hand side
+    std::shared_ptr<DataType> pointerType;//left hand type
+    std::shared_ptr<AstExpression> expression;//right hand side
+public:
+    explicit AstPointerValueToPointerValueAssignmentStatement(const TokenLocationInfo &location,std::string varName, std::shared_ptr<DataType> pointerType, std::shared_ptr<AstExpression> expression):
+    AstNode(location), varName(std::move(varName)), pointerType(std::move(pointerType)), expression(std::move(expression)) {
+        //check they are both pointers
+        if (!pointerType->isPointer() || !expression->getExpressionType()->isPointer()) {
+            throw std::runtime_error("Parser selected incorrect usage of pointer value operator(p2p) at: "+location.toString());
+        }
+        //make sure they both reference the same type
+        std::shared_ptr<DataType> referenceTypeLeft = pointerType->getSubType();
+        std::shared_ptr<DataType> referenceTypeRight = expression->getExpressionType()->getSubType();
+        if (!referenceTypeLeft->typeEqual(referenceTypeRight.get())) {
+            throw std::logic_error("Attempted to copy a value from one pointer to another who reference different types at: "+location.toString());
+        }
+    }
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
+};

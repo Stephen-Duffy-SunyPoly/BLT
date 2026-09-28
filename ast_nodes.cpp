@@ -1136,3 +1136,27 @@ std::string AstPointerValueAssignmentStatement::toString() {
 std::shared_ptr<AstNode> AstPointerValueAssignmentStatement::deepCopy() {
     return std::make_shared<AstPointerValueAssignmentStatement>(getLocation(),pointerType,std::static_pointer_cast<AstExpression>(expression->deepCopy()));
 }
+
+std::vector<std::shared_ptr<AstNode>> AstPointerDereferenceAssignmentStatement::getNodes() {
+    return {expression};
+}
+
+std::string AstPointerDereferenceAssignmentStatement::toString() {
+    return "PointerDereferenceAssignmentStatement";
+}
+
+std::shared_ptr<AstNode> AstPointerDereferenceAssignmentStatement::deepCopy() {
+    return std::make_shared<AstPointerDereferenceAssignmentStatement>(getLocation(),varName, varType, std::static_pointer_cast<AstExpression>(expression->deepCopy()));
+}
+
+std::vector<std::shared_ptr<AstNode>> AstPointerValueToPointerValueAssignmentStatement::getNodes() {
+    return {expression};
+}
+
+std::string AstPointerValueToPointerValueAssignmentStatement::toString() {
+    return "PointerValueToPointerValueAssignmentStatement";
+}
+
+std::shared_ptr<AstNode> AstPointerValueToPointerValueAssignmentStatement::deepCopy() {
+    return std::make_shared<AstPointerValueToPointerValueAssignmentStatement>(getLocation(),varName, pointerType, std::static_pointer_cast<AstExpression>(expression->deepCopy()));
+}
