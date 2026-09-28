@@ -689,7 +689,11 @@ std::string AstFunctionCallExpression::toString() {
 }
 
 std::shared_ptr<AstNode> AstFunctionCallExpression::deepCopy() {
-    return std::make_shared<AstFunctionCallExpression>(getLocation(),functionName,arguments,likelyReturnType);
+    std::vector<std::shared_ptr<AstExpression>> copyArguments;
+    for (auto &arg : arguments) {
+        copyArguments.push_back(std::static_pointer_cast<AstExpression>(arg->deepCopy()));
+    }
+    return std::make_shared<AstFunctionCallExpression>(getLocation(),functionName,copyArguments,likelyReturnType);
 }
 
 std::shared_ptr<DataType> AstFunctionCallExpression::getExpressionType() {
@@ -715,7 +719,10 @@ std::string AstGreaterThanOrEqualExpression::toString() {
 }
 
 std::shared_ptr<AstNode> AstGreaterThanOrEqualExpression::deepCopy() {
-    return std::make_shared<AstGreaterThanOrEqualExpression>(getLocation(),left,right);
+    return std::make_shared<AstGreaterThanOrEqualExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
 }
 
 std::shared_ptr<DataType> AstGreaterThanOrEqualExpression::getExpressionType() {
@@ -760,7 +767,10 @@ std::string AstGreaterThanExpression::toString() {
 }
 
 std::shared_ptr<AstNode> AstGreaterThanExpression::deepCopy() {
-    return std::make_shared<AstGreaterThanExpression>(getLocation(),left,right);
+    return std::make_shared<AstGreaterThanExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
 }
 
 std::shared_ptr<DataType> AstGreaterThanExpression::getExpressionType() {
@@ -805,7 +815,10 @@ std::string AstLessThanOrEqualExpression::toString() {
 }
 
 std::shared_ptr<AstNode> AstLessThanOrEqualExpression::deepCopy() {
-    return std::make_shared<AstLessThanOrEqualExpression>(getLocation(),left,right);
+    return std::make_shared<AstLessThanOrEqualExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
 }
 
 std::shared_ptr<DataType> AstLessThanOrEqualExpression::getExpressionType() {
@@ -850,7 +863,10 @@ std::string AstLessThanExpression::toString() {
 }
 
 std::shared_ptr<AstNode> AstLessThanExpression::deepCopy() {
-    return std::make_shared<AstLessThanExpression>(getLocation(),left,right);
+    return std::make_shared<AstLessThanExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
 }
 
 std::shared_ptr<DataType> AstLessThanExpression::getExpressionType() {
@@ -895,7 +911,10 @@ std::string AstEqualExpression::toString() {
 }
 
 std::shared_ptr<AstNode> AstEqualExpression::deepCopy() {
-    return std::make_shared<AstEqualExpression>(getLocation(),left,right);
+    return std::make_shared<AstEqualExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
 }
 
 std::shared_ptr<DataType> AstEqualExpression::getExpressionType() {
@@ -940,7 +959,10 @@ std::string AstNotEqualExpression::toString() {
 }
 
 std::shared_ptr<AstNode> AstNotEqualExpression::deepCopy() {
-    return std::make_shared<AstNotEqualExpression>(getLocation(),left,right);
+    return std::make_shared<AstNotEqualExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
 }
 
 std::shared_ptr<DataType> AstNotEqualExpression::getExpressionType() {
@@ -985,7 +1007,10 @@ std::string AstLogicalAndExpression::toString() {
 }
 
 std::shared_ptr<AstNode> AstLogicalAndExpression::deepCopy() {
-    return std::make_shared<AstLogicalAndExpression>(getLocation(),left,right);
+    return std::make_shared<AstLogicalAndExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+    );
 }
 
 std::shared_ptr<DataType> AstLogicalAndExpression::getExpressionType() {
@@ -1022,7 +1047,10 @@ std::string AstLogicalOrExpression::toString() {
 }
 
 std::shared_ptr<AstNode> AstLogicalOrExpression::deepCopy() {
-    return std::make_shared<AstLogicalOrExpression>(getLocation(),left,right);
+    return std::make_shared<AstLogicalOrExpression>(getLocation(),
+        std::static_pointer_cast<AstExpression>(left->deepCopy()),
+        std::static_pointer_cast<AstExpression>(right->deepCopy())
+        );
 }
 
 std::shared_ptr<DataType> AstLogicalOrExpression::getExpressionType() {
@@ -1059,7 +1087,7 @@ std::string AstLogicalNotExpression::toString() {
 }
 
 std::shared_ptr<AstNode> AstLogicalNotExpression::deepCopy() {
-    return std::make_shared<AstLogicalNotExpression>(getLocation(),data);
+    return std::make_shared<AstLogicalNotExpression>(getLocation(),std::static_pointer_cast<AstExpression>(data->deepCopy()));
 }
 
 std::shared_ptr<DataType> AstLogicalNotExpression::getExpressionType() {
@@ -1095,4 +1123,16 @@ std::shared_ptr<AstNode> AstValueAssignmentStatement::deepCopy() {
         std::static_pointer_cast<AstExpression>(expression->deepCopy()),
         valueType,immediateValue
     );
+}
+
+std::vector<std::shared_ptr<AstNode>> AstPointerValueAssignmentStatement::getNodes() {
+    return {expression};
+}
+
+std::string AstPointerValueAssignmentStatement::toString() {
+    return "PointerValueAssignmentStatement";
+}
+
+std::shared_ptr<AstNode> AstPointerValueAssignmentStatement::deepCopy() {
+    return std::make_shared<AstPointerValueAssignmentStatement>(getLocation(),pointerType,std::static_pointer_cast<AstExpression>(expression->deepCopy()));
 }

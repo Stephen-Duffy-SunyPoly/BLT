@@ -555,6 +555,10 @@ public:
             }
         }
     }
+
+    std::vector<std::shared_ptr<AstNode>> getNodes() override;
+    std::string toString() override;
+    std::shared_ptr<AstNode> deepCopy() override;
 };
 
 //take value at a pointer expression and dereference it to a variable
